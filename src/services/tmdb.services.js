@@ -8,10 +8,16 @@ const tmdb = axios.create({
   }
 })
 
-async function getPopularMovies() {
-  const response = await tmdb.get("/movie/popular")
+async function getPopularMovies(page = 1) {
+  try {
+    const response = await tmdb.get("/movie/popular", {
+      params: { page }
+    })
 
-  return response.data.results
+    return response.data
+  } catch (err) {
+    throw err
+  }
 }
 
 async function getMoviesById(movieId) {
@@ -19,12 +25,22 @@ async function getMoviesById(movieId) {
   return response.data
 }
 
-async function searchMovies(query) {
-  const response = await tmdb.get("/search/movie", {
-    params: { query }
-  })
+async function searchMovies(query, page = 1) {
 
-  return response.data.results
+  try {
+    const response = await tmdb.get("/search/movie", {
+      params: {
+        query,
+        page
+      }
+    })
+
+    return response.data
+  } catch (err) {
+    console.error("TMDB SEARCH SERVICE ERROR:", err.response?.data)
+    throw err
+  }
 }
 
-export { getPopularMovies, getMoviesById, searchMovies }
+export { getMoviesById, getPopularMovies, searchMovies }
+

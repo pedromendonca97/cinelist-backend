@@ -3,9 +3,21 @@ import { getPopularMovies, getMoviesById, searchMovies } from "../services/tmdb.
 async function listPopularMoviesController(req, res) {
 
   try {
-    const movies = await getPopularMovies()
-    return res.json(movies)
+    let page = parseInt(req.query.page, 10)
+
+    if(isNaN(page) ?? page < 1) {
+      page = 1
+    }
+
+    const data = await getPopularMovies(page)
+
+    return res.json({
+      page: data.page,
+      totalPages: data.total_pages,
+      movies: data.results
+    })
   } catch (err) {
+    console.error("TMDB ERROR:", err.response?.data ?? err.message)
     return res.status(500).json({ message: "Erro ao buscar filmes" })
   }
 }
@@ -23,10 +35,28 @@ async function getMovieController(req, res) {
 async function searchMoviesController(req, res) {
 
   try {
-    const { q } = req.query
-    const movies = await searchMovies(q)
-    return res.json(movies)
+    const q = req.query.q
+
+    if (!q ?? q.trim() === "") {
+      return res.status(400).json({ message: "Parâmetro q é obrigatório" })
+    }
+
+    let page = parseInt(req.query.page, 10)
+
+    if (isNaN(page) ?? page < 1) {
+      page = 1
+    }
+
+    const data = await searchMovies(q, page)
+
+    return res.json({
+      page: data.page,
+      totalPages:data.total_pages,
+      movies: data.results
+    })
+
   } catch (err) {
+    console.error("TMDB_ERROR:", err.response?.data ?? err.message)
     return res.status(500).json({ message: "Erro na busca" })
   }
 }
