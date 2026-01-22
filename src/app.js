@@ -1,4 +1,5 @@
 import express from "express"
+import cors from "cors"
 
 import usersRoutes from "./routes/users.routes.js"
 import authRoutes from "./routes/auth.routes.js"
@@ -7,11 +8,17 @@ import moviesRoutes from "./routes/movies.routes.js"
 
 const app = express()
 
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}))
+
 app.use(express.json())
 
-app.use(usersRoutes)
 app.use(authRoutes)
-app.use(favoritesRoutes)
+app.use(usersRoutes)
 app.use(moviesRoutes)
+
+app.use(favoritesRoutes)
 
 export default app

@@ -1,7 +1,6 @@
 import { getPopularMovies, getMoviesById, searchMovies } from "../services/tmdb.services.js"
 
 async function listPopularMoviesController(req, res) {
-
   try {
     let page = parseInt(req.query.page, 10)
 
