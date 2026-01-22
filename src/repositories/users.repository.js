@@ -12,4 +12,10 @@ async function findUserByEmail(email) {
   return rows[0]
 }
 
-export { createUser, findUserByEmail }
+async function findUserById(id) {
+  const [rows] = await pool.query(`SELECT id, name, email FROM users WHERE id = ? LIMIT 1`, [id])
+
+  return rows[0]
+}
+
+export { createUser, findUserByEmail, findUserById }

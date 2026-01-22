@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid"
 import bcrypt from "bcrypt"
 
-import { createUser, findUserByEmail } from "../repositories/users.repository.js"
+import { createUser, findUserByEmail, findUserById } from "../repositories/users.repository.js"
 
 async function createUserService({ name, email, password }) {
 
@@ -33,4 +33,15 @@ async function createUserService({ name, email, password }) {
   }
 }
 
-export { createUserService }
+async function findUserByIdService(userId) {
+
+  const user = await findUserById(userId)
+
+  if (!user) {
+    throw new Error("Usuário não encontrado")
+  }
+
+  return user
+}
+
+export { createUserService, findUserByIdService }
