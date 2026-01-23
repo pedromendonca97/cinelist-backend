@@ -41,10 +41,10 @@ A API utiliza **JWT** para autenticação.
 
 ## ▶️ Como rodar o projeto
 
-# Instalar dependências
+### Instalar dependências
 npm install
 
-# Rodar em desenvolvimento
+### Rodar em desenvolvimento
 npm run dev
 
 ---
