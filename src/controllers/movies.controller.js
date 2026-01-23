@@ -1,7 +1,9 @@
 import {
   getPopularMovies,
   getMoviesById,
-  searchMovies
+  searchMovies,
+  getMovieGenre,
+  discoverMovies
 } from "../services/tmdb.services.js"
 
 async function listPopularMoviesController(req, res) {
@@ -63,8 +65,38 @@ async function searchMoviesController(req, res) {
   }
 }
 
+async function listeGenreController(req, res) {
+
+  try {
+    const genres = await getMovieGenre()
+    return res.json(genres)
+  } catch (err) {
+    return res.status(500).json({ message: "Erro ao buscar gêneros" })
+  }
+}
+
+async function discoverMoviesController(req, res) {
+
+  try {
+    const page = Number(req.query.page) || 1
+    const genres = req.query.genres || ""
+
+    const data = await discoverMovies({ page, genres })
+
+    return res.json({
+      page: data.page,
+      totalPages: data.total_pages,
+      movies: data.results
+    })
+  } catch (err) {
+    return res.status(500).json({ message: "Erro ao filtrar filmes" })
+  }
+}
+
 export {
   listPopularMoviesController,
   getMovieController,
-  searchMoviesController
+  searchMoviesController,
+  listeGenreController,
+  discoverMoviesController
 }

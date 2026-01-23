@@ -28,14 +28,13 @@ async function getMoviesById(movieId) {
   return response.data
 }
 
-async function searchMovies(query, page = 1, genre) {
+async function searchMovies(query, page = 1) {
 
   try {
     const response = await tmdb.get("/search/movie", {
       params: {
         query,
         page,
-        with_genres: genre
       }
     })
 
@@ -49,8 +48,19 @@ async function searchMovies(query, page = 1, genre) {
 async function getMovieGenre() {
   const response = await tmdb.get("/genre/movie/list")
 
+  return response.data.genres
+}
+
+async function discoverMovies({ page = 1, genres = "" }) {
+  const response = await tmdb.get("/discover/movie", {
+    params: {
+      page,
+      with_genres: genres
+    }
+  })
+
   return response.data
 }
 
-export { getMovieGenre, getMoviesById, getPopularMovies, searchMovies }
+export { getMovieGenre, getMoviesById, getPopularMovies, searchMovies, discoverMovies }
 
