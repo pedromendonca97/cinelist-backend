@@ -11,6 +11,6 @@ router.post("/favorites", createFavoriteController) // Add favorite route
 
 router.get("/favorites", listFavoritesController) // List favorite route
 
-router.delete("/favorites/:movieid", removeFavoriteController) // Delete favorite route
+router.delete("/favorites/:movieId", removeFavoriteController) // Delete favorite route
 
 export default router
