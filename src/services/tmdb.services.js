@@ -24,7 +24,11 @@ async function getPopularMovies(page = 1, genre) {
 }
 
 async function getMoviesById(movieId) {
-  const response = await tmdb.get(`/movie/${movieId}`)
+  const response = await tmdb.get(`/movie/${movieId}`, {
+    params: {
+      append_to_response: "credits,videos"
+    }
+  })
   return response.data
 }
 
