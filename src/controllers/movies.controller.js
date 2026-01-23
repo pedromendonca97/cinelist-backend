@@ -1,14 +1,19 @@
-import { getPopularMovies, getMoviesById, searchMovies } from "../services/tmdb.services.js"
+import {
+  getPopularMovies,
+  getMoviesById,
+  searchMovies
+} from "../services/tmdb.services.js"
 
 async function listPopularMoviesController(req, res) {
   try {
     let page = parseInt(req.query.page, 10)
+    const genre = req.query.genre
 
-    if(isNaN(page) ?? page < 1) {
+    if (isNaN(page) || page < 1) {
       page = 1
     }
 
-    const data = await getPopularMovies(page)
+    const data = await getPopularMovies(page, genre)
 
     return res.json({
       page: data.page,
@@ -16,13 +21,12 @@ async function listPopularMoviesController(req, res) {
       movies: data.results
     })
   } catch (err) {
-    console.error("TMDB ERROR:", err.response?.data ?? err.message)
+    console.error("TMDB ERROR:", err.response?.data || err.message)
     return res.status(500).json({ message: "Erro ao buscar filmes" })
   }
 }
 
 async function getMovieController(req, res) {
-
   try {
     const movie = await getMoviesById(req.params.id)
     return res.json(movie)
@@ -32,32 +36,35 @@ async function getMovieController(req, res) {
 }
 
 async function searchMoviesController(req, res) {
-
   try {
     const q = req.query.q
+    const genre = req.query.genre
 
-    if (!q ?? q.trim() === "") {
+    if (!q || q.trim() === "") {
       return res.status(400).json({ message: "Parâmetro q é obrigatório" })
     }
 
     let page = parseInt(req.query.page, 10)
 
-    if (isNaN(page) ?? page < 1) {
+    if (isNaN(page) || page < 1) {
       page = 1
     }
 
-    const data = await searchMovies(q, page)
+    const data = await searchMovies(q, page, genre)
 
     return res.json({
       page: data.page,
-      totalPages:data.total_pages,
+      totalPages: data.total_pages,
       movies: data.results
     })
-
   } catch (err) {
-    console.error("TMDB_ERROR:", err.response?.data ?? err.message)
+    console.error("TMDB_ERROR:", err.response?.data || err.message)
     return res.status(500).json({ message: "Erro na busca" })
   }
 }
 
-export { listPopularMoviesController, getMovieController, searchMoviesController }
+export {
+  listPopularMoviesController,
+  getMovieController,
+  searchMoviesController
+}

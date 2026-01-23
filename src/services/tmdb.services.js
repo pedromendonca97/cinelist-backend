@@ -8,10 +8,13 @@ const tmdb = axios.create({
   }
 })
 
-async function getPopularMovies(page = 1) {
+async function getPopularMovies(page = 1, genre) {
   try {
     const response = await tmdb.get("/movie/popular", {
-      params: { page }
+      params: {
+        page,
+        with_genres: genre
+      }
     })
 
     return response.data
@@ -25,13 +28,14 @@ async function getMoviesById(movieId) {
   return response.data
 }
 
-async function searchMovies(query, page = 1) {
+async function searchMovies(query, page = 1, genre) {
 
   try {
     const response = await tmdb.get("/search/movie", {
       params: {
         query,
-        page
+        page,
+        with_genres: genre
       }
     })
 
@@ -42,5 +46,11 @@ async function searchMovies(query, page = 1) {
   }
 }
 
-export { getMoviesById, getPopularMovies, searchMovies }
+async function getMovieGenre() {
+  const response = await tmdb.get("/genre/movie/list")
+
+  return response.data
+}
+
+export { getMovieGenre, getMoviesById, getPopularMovies, searchMovies }
 
