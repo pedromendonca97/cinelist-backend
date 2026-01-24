@@ -13,9 +13,16 @@ async function findUserByEmail(email) {
 }
 
 async function findUserById(id) {
-  const [rows] = await pool.query(`SELECT id, name, email FROM users WHERE id = ? LIMIT 1`, [id])
+  const [rows] = await pool.query(`SELECT id, name, email, password FROM users WHERE id = ? LIMIT 1`, [id])
 
   return rows[0]
 }
 
-export { createUser, findUserByEmail, findUserById }
+async function updateUserById(id, { name, email, password }) {
+  const [result] = await pool.query(`UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?`, [name, email, password, id])
+
+  return result
+}
+
+export { createUser, findUserByEmail, findUserById, updateUserById }
+
