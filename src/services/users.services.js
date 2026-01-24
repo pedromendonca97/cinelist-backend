@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt"
 import { v4 as uuidv4 } from "uuid"
 
-import { createUser, findUserByEmail, findUserById, updateUserById } from "../repositories/users.repository.js"
+import { createUser, findUserByEmail, findUserById, updateUserById, updateUserPassword } from "../repositories/users.repository.js"
 
 async function createUserService({ name, email, password }) {
 
@@ -44,23 +44,43 @@ async function findUserByIdService(userId) {
   return user
 }
 
-async function updateUserByIdService(userId, { name, email, password }) {
+async function updateUserByIdService(userId, { name, email }) {
 
-  if (!name || !email || !password) {
-    throw new Error("Todos os campos são obrigatórios")
+  if (!name && !email) {
+    throw new Error("Atualize ao menos um campo")
   }
-
-  const passwordHashed = await bcrypt.hash(password, 10)
-
-  await updateUserById(userId, { name, email, password: passwordHashed })
 
   const user = await findUserById(userId)
-  if (!user || !user.password) {
+  if (!user) {
     throw new Error("Usuário não encontrado")
   }
+
+  await updateUserById(userId, {
+    name: name ?? user.name,
+    email: email ?? user.email
+  })
 
   return { message: "Usuário atualizado com sucesso", user }
 }
 
-export { createUserService, findUserByIdService, updateUserByIdService }
+async function updatePasswordService(userId, { currentPassword, newPassword }) {
+
+  const user = await findUserById(userId)
+  if (!user) {
+    throw new Error("Usuário não encontrado")
+  }
+
+  const passwordMatch = await bcrypt.compare(currentPassword, user.password)
+  if (!passwordMatch) {
+    throw new Error("Senha incorreta")
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10)
+
+  await updateUserPassword(userId, hashedPassword)
+
+  return { message: "Senha atualizada com sucesso" }
+}
+
+export { createUserService, findUserByIdService, updateUserByIdService, updatePasswordService }
 

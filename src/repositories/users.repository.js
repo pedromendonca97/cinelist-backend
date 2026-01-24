@@ -18,11 +18,17 @@ async function findUserById(id) {
   return rows[0]
 }
 
-async function updateUserById(id, { name, email, password }) {
-  const [result] = await pool.query(`UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?`, [name, email, password, id])
+async function updateUserById(id, { name, email }) {
+  const [result] = await pool.query(`UPDATE users SET name = ?, email = ? WHERE id = ?`, [name, email, id])
 
   return result
 }
 
-export { createUser, findUserByEmail, findUserById, updateUserById }
+async function updateUserPassword(id, password) {
+  const [result] = await pool.query(`UPDATE users SET password = ? WHERE id = ?`, [password, id])
+
+  return result
+}
+
+export { createUser, findUserByEmail, findUserById, updateUserById, updateUserPassword }
 

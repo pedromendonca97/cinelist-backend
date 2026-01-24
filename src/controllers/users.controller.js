@@ -1,4 +1,4 @@
-import { createUserService, findUserByIdService, updateUserByIdService } from "../services/users.services.js"
+import { createUserService, findUserByIdService, updateUserByIdService, updatePasswordService } from "../services/users.services.js"
 
 async function createUserController(req, res) {
 
@@ -36,4 +36,16 @@ async function updateUserByIdController(req, res) {
   }
 }
 
-export { createUserController, findUserByIdController, updateUserByIdController }
+async function updatePasswordController(req, res) {
+
+  try {
+    const user = await updatePasswordService(req.userId, req.body)
+
+    return res.status(200).json(user)
+  } catch (err) {
+    return res.status(400).json({ message: err.message })
+  }
+
+}
+
+export { createUserController, findUserByIdController, updateUserByIdController, updatePasswordController }
